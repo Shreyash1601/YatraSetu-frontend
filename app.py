@@ -1,5 +1,6 @@
 import streamlit as st
 from auth import login, logout
+from image_service import get_wikipedia_image
 
 
 from api import (

@@ -1,4 +1,5 @@
 import streamlit as st
+from image_service import get_wikipedia_image
 
 
 def render(data):
@@ -11,12 +12,16 @@ def render(data):
 
         with cols[i % 2]:
 
-            st.container(border=True)
+            with st.container(border=True):
 
-            st.image(
-                f"https://picsum.photos/500/300?food={i}"
-            )
+                image = get_wikipedia_image(food["dish"])
 
-            st.subheader(food["dish"])
+                if image:
+                    st.image(
+                        image,
+                        use_container_width=True
+                    )
 
-            st.write(food["description"])
+                st.subheader(food["dish"])
+
+                st.write(food["description"])

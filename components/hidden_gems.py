@@ -1,4 +1,5 @@
 import streamlit as st
+from image_service import get_wikipedia_image
 
 
 def render(data):
@@ -11,12 +12,16 @@ def render(data):
 
         with cols[i % 2]:
 
-            st.container(border=True)
+            with st.container(border=True):
 
-            st.image(
-                f"https://picsum.photos/600/350?random={i}"
-            )
+                image = get_wikipedia_image(gem["name"])
 
-            st.subheader(gem["name"])
+                if image:
+                    st.image(
+                        image,
+                        use_container_width=True
+                    )
 
-            st.write(gem["why_visit"])
+                st.subheader(gem["name"])
+
+                st.write(gem["why_visit"])

@@ -1,4 +1,6 @@
 import streamlit as st
+from auth import login, logout
+
 
 from api import (
     get_itinerary,
@@ -7,6 +9,7 @@ from api import (
     get_food,
     get_events,
     get_culture,
+    get_summary
 )
 
 from styles import load_css
@@ -27,12 +30,21 @@ st.set_page_config(
 )
 
 load_css()
+if not login():
+    st.stop()
+
 
 hero()
 
 # ---------------- Sidebar ----------------
 
 st.sidebar.title("⚙️ Trip Planner")
+
+st.sidebar.success(
+    f"Welcome {st.session_state.user}"
+)
+
+logout()
 
 destination = st.sidebar.text_input(
     "Destination",
@@ -83,6 +95,14 @@ story_style = st.sidebar.selectbox(
         "documentary",
     ],
 )
+summary = get_summary(
+    {
+        "destination": destination,
+        "days": days,
+        "budget": budget,
+        "interests": interests
+    }
+)
 
 generate = st.sidebar.button(
     "✨ Generate Journey",
@@ -127,6 +147,7 @@ if generate:
         )
 
         st.session_state.results = {
+            "summary": summary,
             "itinerary": itinerary,
             "hidden": hidden,
             "food": food,
@@ -145,6 +166,20 @@ if st.session_state.results:
         f"https://picsum.photos/1400/450?{destination}",
         use_container_width=True,
     )
+
+    with st.container(border=True):
+
+        st.markdown("## 🌍 AI Travel Summary")
+
+        st.write(
+            st.session_state.results["summary"]["summary"]
+        )
+
+        st.markdown(f"""
+### 🌍 AI Travel Summary
+
+> {st.session_state.results["summary"]["summary"]}
+""")
 
     tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(
         [

@@ -3,6 +3,15 @@ import requests
 BASE_URL = "https://yatrasetu-backend.onrender.com"
 
 
+
+def get_summary(data):
+
+    return call_api(
+        "summary",
+        data
+    )
+
+
 def call_api(endpoint: str, payload: dict):
 
     response = requests.post(
